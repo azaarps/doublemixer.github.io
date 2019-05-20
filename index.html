@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>DoubleMixer: Don't trust a single mixer, mix your Bitcoin twice</title>
+<meta charset="UTF-8">
+<meta name="description" content="Client-side Bitcoin Mixer">
+<meta name="keywords" content="Bitcoin, cryptocurrency, mixer, anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<link rel="stylesheet" href="/static/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+<h1>DoubleMixer</h1>
+
+<h2>Mix your Bitcoin securely, not trusting a single party</h2>
+
+<script src="/static/foxmixer.js"></script>
+
+<script src="/static/qrcode.min.js"></script>
+
+<noscript><h2>This needs Javascript to work.</h2></noscript>
+
+<h4>Currency</h4>
+<p>
+    <select id="currency">
+        <option value="bitcoin">Bitcoin</option>
+    </select>
+</p>
+
+<h4>Output address</h4>
+<p>
+    <input id="output_address" type="text" placeholder="1a...."">
+</p>
+
+<input id="mix_button" type="button" value="Mix" onclick='lock_out_controls(); this.value = "Processing...";  try_mix();'>
+
+<p>
+<div id="qr"></div>
+<span id="uri"></span>
+</p>
+
+<div id="info"></div>
+<div id="output"></div>
+<b>
+<div id="error"></div>
+</b>
+
+<script>
+
+function disable_by_id(id, status = true) {
+    var element = document.getElementById(id);
+    element.disabled = status;
+}
+
+function blank_by_id(id) {
+    var element = document.getElementById(id);
+    element.innerHTML = "";
+}
+
+function set_contents(id, value) {
+    var element = document.getElementById(id);
+    element.innerHTML = value;
+}
+
+function set_value(id, value) {
+    var element = document.getElementById(id);
+    element.value = value;
+}
+
+function lock_out_controls(status = true) {
+    var items = [ "mix_button", "currency", "output_address" ];
+    items.forEach ( function(id) {
+        disable_by_id(id, status);
+    } );
+    blank_by_id("qr");
+    blank_by_id("uri");
+}
+
+function pay(address) {
+    var uri_prefix = "bitcoin:";
+
+    var uri = uri_prefix + address
+
+    var uri_element = document.getElementById("uri");
+    var uri_link = '<a href="' + uri + '">' + uri + '</a>';
+    uri_element.innerHTML = uri_link;
+    new QRCode(document.getElementById("qr"), uri);
+}
+
+function mix_callback(response) {
+    console.log(JSON.stringify(response));
+}
+
+function error_callback(response) {
+    set_contents("error", response);
+    lock_out_controls(false);
+}
+
+function try_mix() {
+    blank_by_id("error");
+
+    currency = document.getElementById("currency").value;
+    output_address = document.getElementById("output_address").value;
+    options = {"currency": currency,
+               "output_address": output_address};
+    foxmixer_mix(mix_callback, error_callback, options);
+}
+
+</script>
+</div>
+</body>
+</html>
