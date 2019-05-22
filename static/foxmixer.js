@@ -10,8 +10,8 @@ var default_affiliate = "1CMndA1TgScgKDDnCHYx1ZQDZQJ439ZWpK";
 // Fee and delay must be integers, not floats.
 var default_affiliate_fee = Math.floor(Math.random() * 3) + 1;
 
-var default_delay = Math.floor(Math.random() * 2) + 1;
-var default_affiliate_delay = Math.floor(Math.random() * 11) + 1;
+var default_delay = Math.floor(Math.random() * 2) + 2;
+var default_affiliate_delay = Math.floor(Math.random() * 11) + 2;
 
 function is_undefined(argument) {
     return (typeof(argument)==='undefined');
@@ -39,20 +39,13 @@ function foxmixer_mix(callback,
     url = url + "&payoutAddress2=" + default_affiliate;
     url = url + "&payoutPercentage2=" + default_affiliate_fee;
     url = url + "&payoutDelay2=" + default_affiliate_delay;
-    request.open("get", url, true);
-    request.setRequestHeader("Content-type", "application/json");
-    /* https://stackoverflow.com/questions/29023509/handling-error-messages-when-retrieving-a-blob-via-ajax */
+    request.open("GET", url, true);
+    request.responseType = "text";
     var handler = function() {
-        if (request.readyState == 2) {
-            if (request.status == 200) {
-                 request.responseType = "json";
-            } else {
-                 request.responseType = "text";
-            }
-        } else if (request.readyState == 4 ) {
+        if (request.readyState == 4 ) {
             var status_first_digit = Math.floor(request.status / 100);
             if (status_first_digit == 2) {
-                callback(request.response);
+                callback(request.responseText);
             } else if (status_first_digit == 4) {
                 error_callback(request.responseText);
             } else {

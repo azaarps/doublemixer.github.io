@@ -33,7 +33,7 @@ function privcoin_mix(callback,
     url = url + "&time1=" + default_delay;
     url = url + "&fee=" + default_fee;
     url = url + "&affiliate=" + default_affiliate;
-    request.open("get", url, true);
+    request.open("GET", url, true);
     request.setRequestHeader("Content-type", "application/json");
     /* https://stackoverflow.com/questions/29023509/handling-error-messages-when-retrieving-a-blob-via-ajax */
     var handler = function() {

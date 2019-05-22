@@ -39,7 +39,7 @@ function bitmix_mix(callback,
 
     var request = new XMLHttpRequest();
     var url = endpoint + "/api/order/create";
-    request.open("post", url, true);
+    request.open("POST", url, true);
     request.setRequestHeader("Content-type", "application/json");
     /* https://stackoverflow.com/questions/29023509/handling-error-messages-when-retrieving-a-blob-via-ajax */
     var handler = function() {
