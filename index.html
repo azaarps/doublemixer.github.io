@@ -43,6 +43,7 @@
 <b>
 <div id="error"></div>
 </b>
+<pre><div id="letter"></div></pre>
 
 <script>
 
@@ -86,8 +87,14 @@ function pay(address) {
     new QRCode(document.getElementById("qr"), uri);
 }
 
+function letter_callback(response) {
+    set_contents("letter", response);
+}
+
 function mix_callback(response) {
-    console.log(response);
+    pay(response["address"])
+    // Wait 3 seconds before trying to get letter.
+    setTimeout(function() { foxmixer_letter_of_guarantee(letter_callback, error_callback, response["mix_id"]); }, 3000)
 }
 
 function error_callback(response) {
