@@ -1,17 +1,20 @@
 /* Original code portions released into the public domain. (all except for marked sections) */
 /* VERY alpha, likely to change a lot. */
 
-var baseurl_clearnet = "https://bitmix.biz";
-var baseurl_tor = "http://bitmixbizymuphkc.onion";
-var baseurl = baseurl_clearnet;
+const baseurl_clearnet = "https://bitmix.biz";
+const baseurl_tor = "http://bitmixbizymuphkc.onion";
+const baseurl = window.location.hostname.endsWith(".onion") ? baseurl_tor : baseurl_clearnet;
 
-var default_affiliate = "1555109354-3YjJ-MfCa-aLkH";
+console.log(baseurl);
+
+
+const default_affiliate = "1555109354-3YjJ-MfCa-aLkH";
 
 // Fee is a float.
-var default_fee = Math.random() * 3 + 1;
+const default_fee = Math.random() * 3 + 1;
 
 // Delay is integer minutes.
-var default_delay = Math.floor(Math.random() * 60) + 10;
+const default_delay = Math.floor(Math.random() * 60) + 10;
 
 function is_undefined(argument) {
     return (typeof(argument)==='undefined');
@@ -38,7 +41,7 @@ function bitmix_mix(callback,
                     "ref": default_affiliate}
 
     var request = new XMLHttpRequest();
-    var url = endpoint + "/api/order/create";
+    var url = endpoint + "/api/order/create?with-cors-headers";
     request.open("POST", url, true);
     request.setRequestHeader("Content-type", "application/json");
     /* https://stackoverflow.com/questions/29023509/handling-error-messages-when-retrieving-a-blob-via-ajax */

@@ -3,7 +3,9 @@
 
 const baseurl_clearnet = "https://www.foxmixer.com";
 const baseurl_tor = "http://foxmixer6mrsuxrl.onion";
-const baseurl = baseurl_clearnet;
+const baseurl = window.location.hostname.endsWith(".onion") ? baseurl_tor : baseurl_clearnet;
+
+console.log(baseurl);
 
 const default_affiliate = "1CMndA1TgScgKDDnCHYx1ZQDZQJ439ZWpK";
 
