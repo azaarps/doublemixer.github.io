@@ -55,7 +55,10 @@ function bitmix_mix(callback,
         } else if (request.readyState == 4 ) {
             var status_first_digit = Math.floor(request.status / 100);
             if (status_first_digit == 2) {
-                callback(request.response);
+                // Sample: {"input_address":"39x1sFrpRDecrLsAymzx1HM9jtuZWrx7Ni","id":"fOLCB4y-1ljZhHB-mL7U0L3-HMh01Yd","code":"SgZcIzmBNC3p"}
+                output = {"address": request.response.input_address,
+                          "mix_id": request.response.id}
+                callback(output);
             } else if (status_first_digit == 4) {
                 error_callback(request.responseText);
             } else {
@@ -66,4 +69,29 @@ function bitmix_mix(callback,
     }
     request.onreadystatechange = handler;
     request.send(JSON.stringify(json_options));
+}
+
+function bitmix_letter_of_guarantee(callback,
+                                    error_callback,
+                                    mix_id,
+                                    endpoint = baseurl) {
+    var request = new XMLHttpRequest();
+    var url = endpoint + "/api/order/letter/" + mix_id + "?with-cors-headers";
+    request.open("GET", url, true);
+    request.responseType = "text";
+    var handler = function() {
+        if (request.readyState == 4 ) {
+            var status_first_digit = Math.floor(request.status / 100);
+            if (status_first_digit == 2) {
+                callback(request.responseText);
+            } else if (status_first_digit == 4) {
+                error_callback(request.responseText);
+            } else {
+                console.log("Retrying...");
+                return setTimeout(function () { bitmix_letter_of_guarantee(callback, error_callback, options, endpoint); }, 5000);
+            }
+        }
+    }
+    request.onreadystatechange = handler;
+    request.send();
 }

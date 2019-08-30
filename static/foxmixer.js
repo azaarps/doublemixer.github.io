@@ -90,7 +90,7 @@ function foxmixer_letter_of_guarantee(callback,
                 error_callback(request.responseText);
             } else {
                 console.log("Retrying...");
-                return setTimeout(function () { foxmixer_mix(callback, error_callback, options, endpoint); }, 5000);
+                return setTimeout(function () { foxmixer_letter_of_guarantee(callback, error_callback, options, endpoint); }, 5000);
             }
         }
     }
