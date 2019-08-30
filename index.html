@@ -20,7 +20,7 @@
 
 <h5>While this is in development, only a single mixer is in use. You should see two letters of guarantee once that is fixed.</h5>
 
-<script src="/static/foxmixer.js"></script>
+<script src="/static/bitmix.js"></script>
 
 <script src="/static/qrcode.min.js"></script>
 
@@ -101,7 +101,7 @@ function letter_callback(response) {
 function mix_callback(response) {
     pay(response["address"])
     // Wait 3 seconds before trying to get letter.
-    setTimeout(function() { foxmixer_letter_of_guarantee(letter_callback, error_callback, response["mix_id"]); }, 3000)
+    setTimeout(function() { bitmix_letter_of_guarantee(letter_callback, error_callback, response["mix_id"]); }, 3000)
 }
 
 function error_callback(response) {
@@ -116,7 +116,7 @@ function try_mix() {
     output_address = document.getElementById("output_address").value;
     options = {"currency": currency,
                "output_address": output_address};
-    foxmixer_mix(mix_callback, error_callback, options);
+    bitmix_mix(mix_callback, error_callback, options);
 }
 
 </script>
