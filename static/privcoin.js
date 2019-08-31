@@ -1,5 +1,6 @@
 /* Original code portions released into the public domain. (all except for marked sections) */
 /* VERY alpha, likely to change a lot. */
+/* This does not work! */
 
 var baseurl_clearnet = "https://www.privcoin.io";
 var baseurl_tor = "http://tr5ods7ncr6eznny.onion";

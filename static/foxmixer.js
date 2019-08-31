@@ -1,19 +1,19 @@
 /* Original code portions released into the public domain. (all except for marked sections) */
 /* VERY alpha, likely to change a lot. */
 
-const baseurl_clearnet = "https://www.foxmixer.com";
-const baseurl_tor = "http://foxmixer6mrsuxrl.onion";
-const baseurl = window.location.hostname.endsWith(".onion") ? baseurl_tor : baseurl_clearnet;
+const foxmixer_baseurl_clearnet = "https://www.foxmixer.com";
+const foxmixer_baseurl_tor = "http://foxmixer6mrsuxrl.onion";
+const foxmixer_baseurl = window.location.hostname.endsWith(".onion") ? foxmixer_baseurl_tor : foxmixer_baseurl_clearnet;
 
-console.log(baseurl);
+console.log(foxmixer_baseurl);
 
-const default_affiliate = "1CMndA1TgScgKDDnCHYx1ZQDZQJ439ZWpK";
+const foxmixer_default_affiliate = "1CMndA1TgScgKDDnCHYx1ZQDZQJ439ZWpK";
 
 // Fee and delay must be integers, not floats.
-const default_affiliate_fee = Math.floor(Math.random() * 3) + 1;
+const foxmixer_default_affiliate_fee = Math.floor(Math.random() * 3) + 1;
 
-const default_delay = Math.floor(Math.random() * 2) + 2;
-const default_affiliate_delay = Math.floor(Math.random() * 11) + 2;
+const foxmixer_default_delay = Math.floor(Math.random() * 2) + 2;
+const foxmixer_default_affiliate_delay = Math.floor(Math.random() * 11) + 2;
 
 function is_undefined(argument) {
     return (typeof(argument)==='undefined');
@@ -37,9 +37,9 @@ function foxmixer_jsonify(responseText) {
 function foxmixer_mix(callback,
                       error_callback,
                       options,
-                      endpoint = baseurl) {
+                      endpoint = foxmixer_baseurl) {
 
-    if (is_undefined(options['delay'])) options['delay'] = default_delay;
+    if (is_undefined(options['delay'])) options['delay'] = foxmixer_default_delay;
 
     if (options["currency"] != "bitcoin" ) {
         console.log("bitcoin is the only supported currency");
@@ -49,11 +49,11 @@ function foxmixer_mix(callback,
     var request = new XMLHttpRequest();
     var url = endpoint + "/api/createMix";
     url = url + "?payoutAddress1=" + options["output_address"];
-    url = url + "&payoutPercentage1=" + (100 - default_affiliate_fee);
+    url = url + "&payoutPercentage1=" + (100 - foxmixer_default_affiliate_fee);
     url = url + "&payoutDelay1=" + options["delay"];
-    url = url + "&payoutAddress2=" + default_affiliate;
-    url = url + "&payoutPercentage2=" + default_affiliate_fee;
-    url = url + "&payoutDelay2=" + default_affiliate_delay;
+    url = url + "&payoutAddress2=" + foxmixer_default_affiliate;
+    url = url + "&payoutPercentage2=" + foxmixer_default_affiliate_fee;
+    url = url + "&payoutDelay2=" + foxmixer_default_affiliate_delay;
     request.open("GET", url, true);
     request.responseType = "text";
     var handler = function() {
@@ -76,7 +76,7 @@ function foxmixer_mix(callback,
 function foxmixer_letter_of_guarantee(callback,
                                       error_callback,
                                       mix_id,
-                                      endpoint = baseurl) {
+                                      endpoint = foxmixer_baseurl) {
     var request = new XMLHttpRequest();
     var url = endpoint + "/mix/" + mix_id + "/LetterOfGuarantee.txt";
     request.open("GET", url, true);

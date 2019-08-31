@@ -1,11 +1,39 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <title>DoubleMixer: Don't trust a single mixer, mix your Bitcoin twice</title>
 <meta charset="UTF-8">
 <meta name="description" content="Client-side Bitcoin Mixer">
-<meta name="keywords" content="Bitcoin, cryptocurrency, mixer, anonymous">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="keywords" content="Bitcoin, cryptocurrency, mixer, blender, anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/static/bootstrap.min.css">
+
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" href="/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
+
+
+<!-- https://github.com/thednp/bootstrap.native -->
+<script src="/static/bootstrap-native-v4.min.js"></script>
 </head>
 <body>
 <!-- Thanks to http://tholman.com/github-corners/ -->
@@ -15,12 +43,11 @@
 <div class="jumbotron">
 <h1>DoubleMixer</h1>
 
-<p>Mix your Bitcoin securely, not trusting a single party</p>
+<p>Mix your Bitcoin securely, not trusting a single party. 100% client side Javascript. Open Source.</p>
 </div>
 
-<h5>While this is in development, only a single mixer is in use. You should see two letters of guarantee once that is fixed.</h5>
-
 <script src="/static/bitmix.js"></script>
+<script src="/static/foxmixer.js"></script>
 
 <script src="/static/qrcode.min.js"></script>
 
@@ -35,10 +62,10 @@
 
 <h4>Output address</h4>
 <p>
-    <input id="output_address" type="text" placeholder="1a....">
+    <input class="form-control" id="output_address" type="text" placeholder="1... or 3...">
 </p>
 
-<input id="mix_button" type="button" value="Mix" onclick='lock_out_controls(); this.value = "Ready once you see a letter of guarantee";  try_mix();'>
+<input id="mix_button" type="button" value="Mix" onclick='lock_out_controls(); this.value = "Processing...";  try_mix_1();'>
 
 <p>
 <div id="qr"></div>
@@ -47,10 +74,18 @@
 
 <div id="info"></div>
 <div id="output"></div>
-<b>
-<div id="error"></div>
-</b>
-<code><textarea class="form-control" id="letter" readonly></textarea></code>
+
+<div class="fixed-top" id="alerts"></div>
+
+<div class="card card-body">
+<h2>Final mix Letter of Guarantee</h2>
+<code><pre class="card card-body" style="white-space: pre-wrap" id="letter1"></pre></code>
+</div>
+
+<div class="card card-body">
+<h2>Receiving mix Letter of Guarantee</h2>
+<code><pre class="card card-body" style="white-space: pre-wrap" id="letter2"></pre></code>
+</div>
 
 <script>
 
@@ -94,33 +129,110 @@ function pay(address) {
     new QRCode(document.getElementById("qr"), uri);
 }
 
-function letter_callback(response) {
-    set_contents("letter", response);
+function letter_1_callback(response) {
+    set_contents("letter1", response);
+    try_mix_2();
 }
 
-function mix_callback(response) {
-    pay(response["address"])
+function letter_2_callback(response) {
+    set_contents("letter2", response);
+    set_value("mix_button", "Done")
+    success("Ready for mixing. Be sure to read and understand the letter of guarantees. Save them just in case. Validate signatures if you are paranoid.")
+}
+
+var MIX_1_ADDRESS;
+function mix_1_callback(response) {
+    MIX_1_ADDRESS = response["address"]
     // Wait 3 seconds before trying to get letter.
-    setTimeout(function() { bitmix_letter_of_guarantee(letter_callback, error_callback, response["mix_id"]); }, 3000)
+    setTimeout(function() { foxmixer_letter_of_guarantee(letter_1_callback, error_callback, response["mix_id"]); }, 3000)
+}
+
+function mix_2_callback(response) {
+    // Wait 3 seconds before trying to get letter.
+    setTimeout(function() { bitmix_letter_of_guarantee(letter_2_callback, error_callback, response["mix_id"]); }, 3000)
+    pay(response["address"])
+}
+
+function append_contents(id, value) {
+    var element = document.getElementById(id);
+    element.innerHTML += value;
+}
+
+function success(message) {
+    const message_prefix = "DoubleMixer: ";
+    console.log(message_prefix + message);
+    append_contents("alerts", '<div class="alert alert-success alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+    BSN.initCallback();
+}
+
+function info(message) {
+    const message_prefix = "DoubleMixer: ";
+    console.log(message_prefix + message);
+    append_contents("alerts", '<div class="alert alert-info alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+    BSN.initCallback();
+}
+
+function error(message) {
+    const message_prefix = "DoubleMixer [ERROR]: ";
+    console.log(message_prefix + message);
+    append_contents("alerts", '<div class="alert alert-danger alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert"">&times;</button>' + message + '</div>');
+    BSN.initCallback();
+}
+
+function warning(message) {
+    const message_prefix = "DoubleMixer: ";
+    console.log(message_prefix + message);
+    append_contents("alerts", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+    BSN.initCallback();
+}
+
+function error(message) {
+    const message_prefix = "DoubleMixer [ERROR]: ";
+    console.log(message_prefix + message);
+    append_contents("alerts", '<div class="alert alert-danger alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert"">&times;</button>' + message + '</div>');
+    BSN.initCallback();
 }
 
 function error_callback(response) {
-    set_contents("error", response);
+    error(response);
     lock_out_controls(false);
 }
-
-function try_mix() {
-    blank_by_id("error");
-
+function try_mix_1() {
     currency = document.getElementById("currency").value;
     output_address = document.getElementById("output_address").value;
     options = {"currency": currency,
                "output_address": output_address};
-    bitmix_mix(mix_callback, error_callback, options);
+    foxmixer_mix(mix_1_callback, error_callback, options);
+}
+
+function try_mix_2() {
+    currency = document.getElementById("currency").value;
+    output_address = MIX_1_ADDRESS;
+    options = {"currency": currency,
+               "output_address": output_address};
+    bitmix_mix(mix_2_callback, error_callback, options);
+}
+
+if (! window.location.hostname.endsWith(".onion")) {
+    warning("While you can use DoubleMixer like this, we recommend using <a target='_blank' class='alert-link' href='https://www.torproject.org/'>Tor Browser</a> and connecting to our <a class='alert-link' href='http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion'>Hidden Service</a>.")
+}
+
+if (window.location.hostname.endsWith(".onion")) {
+    info("Thanks for using Tor!")
 }
 
 </script>
-<p>DoubleMixer is available over <a href="https://doublemixer.github.io/">clearnet</a> or <a href="http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/">Tor Hidden Services (.onion)</a>.</p>
+<article>
+<h2 class="mt-3 mb-3">Prefer the command line?</h2>
+<img class="mw-100 mb-3" alt="doublemixer Python screenshot" src="/static/doublemixer-cli.png">
+<p>Make sure you have pip, the Python package manager installed. Needs to be Python 3, not Python 2. Lastly, make sure you have a Tor SOCKS proxy running locally (127.0.0.1:9050)</p>
+<p><code>pip3 install doublemixer</code></p>
+<p><code>doublemixer mix --currency bitcoin --output_address (your address)</code></p>
+<p>DoubleMixer Python source code is also <a href="https://github.com/teran-mckinney/doublemixer-python" target="_blank">available on Github</a>.</p>
+</article>
+<footer>
+<p><small>DoubleMixer is available over <a href="https://doublemixer.github.io/">clearnet</a> or <a href="http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/">Tor Hidden Services (.onion)</a>.</small></p>
+</footer>
 </div>
 </body>
 </html>

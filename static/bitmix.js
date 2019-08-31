@@ -1,20 +1,20 @@
 /* Original code portions released into the public domain. (all except for marked sections) */
 /* VERY alpha, likely to change a lot. */
 
-const baseurl_clearnet = "https://bitmix.biz";
-const baseurl_tor = "http://bitmixbizymuphkc.onion";
-const baseurl = window.location.hostname.endsWith(".onion") ? baseurl_tor : baseurl_clearnet;
+const bitmix_baseurl_clearnet = "https://bitmix.biz";
+const bitmix_baseurl_tor = "http://bitmixbizymuphkc.onion";
+const bitmix_baseurl = window.location.hostname.endsWith(".onion") ? bitmix_baseurl_tor : bitmix_baseurl_clearnet;
 
-console.log(baseurl);
+console.log(bitmix_baseurl);
 
 
-const default_affiliate = "1555109354-3YjJ-MfCa-aLkH";
+const bitmix_default_affiliate = "1555109354-3YjJ-MfCa-aLkH";
 
 // Fee is a float.
-const default_fee = Math.random() * 3 + 1;
+const bitmix_default_fee = Math.random() * 3 + 1;
 
 // Delay is integer minutes.
-const default_delay = Math.floor(Math.random() * 60) + 10;
+const bitmix_default_delay = Math.floor(Math.random() * 60) + 10;
 
 function is_undefined(argument) {
     return (typeof(argument)==='undefined');
@@ -23,11 +23,11 @@ function is_undefined(argument) {
 function bitmix_mix(callback,
                     error_callback,
                     options,
-                    endpoint = baseurl) {
+                    endpoint = bitmix_baseurl) {
 
     console.log(endpoint);
 
-    if (is_undefined(options['delay'])) options['delay'] = default_delay;
+    if (is_undefined(options['delay'])) options['delay'] = bitmix_default_delay;
 
     if (options["currency"] != "bitcoin" ) {
         console.log("bitcoin is the only supported currency");
@@ -36,9 +36,9 @@ function bitmix_mix(callback,
 
     json_options = {"address": [output_address],
                     "delay": options["delay"],
-                    "tax": default_fee,
+                    "tax": bitmix_default_fee,
                     "coin": options["currency"],
-                    "ref": default_affiliate}
+                    "ref": bitmix_default_affiliate}
 
     var request = new XMLHttpRequest();
     var url = endpoint + "/api/order/create?with-cors-headers";
@@ -74,7 +74,7 @@ function bitmix_mix(callback,
 function bitmix_letter_of_guarantee(callback,
                                     error_callback,
                                     mix_id,
-                                    endpoint = baseurl) {
+                                    endpoint = bitmix_baseurl) {
     var request = new XMLHttpRequest();
     var url = endpoint + "/api/order/letter/" + mix_id + "?with-cors-headers";
     request.open("GET", url, true);
