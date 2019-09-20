@@ -8,10 +8,10 @@ const bitmix_baseurl = window.location.hostname.endsWith(".onion") ? bitmix_base
 console.log(bitmix_baseurl);
 
 
-const bitmix_default_affiliate = "1555109354-3YjJ-MfCa-aLkH";
+const bitmix_default_affiliate = "1568954219-MR4r-lK60-zme4";
 
 // Fee is a float.
-const bitmix_default_fee = Math.random() * 3 + 1;
+const bitmix_default_fee = Math.random() * 2 + 3;
 
 // Delay is integer minutes.
 const bitmix_default_delay = Math.floor(Math.random() * 60) + 10;

@@ -7,13 +7,8 @@ const foxmixer_baseurl = window.location.hostname.endsWith(".onion") ? foxmixer_
 
 console.log(foxmixer_baseurl);
 
-const foxmixer_default_affiliate = "1CMndA1TgScgKDDnCHYx1ZQDZQJ439ZWpK";
-
 // Fee and delay must be integers, not floats.
-const foxmixer_default_affiliate_fee = Math.floor(Math.random() * 3) + 1;
-
 const foxmixer_default_delay = Math.floor(Math.random() * 2) + 2;
-const foxmixer_default_affiliate_delay = Math.floor(Math.random() * 11) + 2;
 
 function is_undefined(argument) {
     return (typeof(argument)==='undefined');
@@ -49,11 +44,8 @@ function foxmixer_mix(callback,
     var request = new XMLHttpRequest();
     var url = endpoint + "/api/createMix";
     url = url + "?payoutAddress1=" + options["output_address"];
-    url = url + "&payoutPercentage1=" + (100 - foxmixer_default_affiliate_fee);
+    url = url + "&payoutPercentage1=100";
     url = url + "&payoutDelay1=" + options["delay"];
-    url = url + "&payoutAddress2=" + foxmixer_default_affiliate;
-    url = url + "&payoutPercentage2=" + foxmixer_default_affiliate_fee;
-    url = url + "&payoutDelay2=" + foxmixer_default_affiliate_delay;
     request.open("GET", url, true);
     request.responseType = "text";
     var handler = function() {

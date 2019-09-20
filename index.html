@@ -79,13 +79,13 @@
 <div class="fixed-top" id="alerts"></div>
 
 <div class="card card-body">
-<h2>Final mix Letter of Guarantee</h2>
-<code><pre class="card card-body" style="white-space: pre-wrap" id="letter1"></pre></code>
+<h2>Receiving Mix Letter Of Guarantee</h2>
+<code><pre class="card card-body" style="white-space: pre-wrap" id="letter2"></pre></code>
 </div>
 
 <div class="card card-body">
-<h2>Receiving mix Letter of Guarantee</h2>
-<code><pre class="card card-body" style="white-space: pre-wrap" id="letter2"></pre></code>
+<h2>Final Mix Letter Of Guarantee</h2>
+<code><pre class="card card-body" style="white-space: pre-wrap" id="letter1"></pre></code>
 </div>
 
 <script>
@@ -167,8 +167,6 @@ function success(message) {
 }
 
 function info(message) {
-    const message_prefix = "DoubleMixer: ";
-    console.log(message_prefix + message);
     append_contents("alerts", '<div class="alert alert-info alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
     BSN.initCallback();
 }
@@ -181,8 +179,6 @@ function error(message) {
 }
 
 function warning(message) {
-    const message_prefix = "DoubleMixer: ";
-    console.log(message_prefix + message);
     append_contents("alerts", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
     BSN.initCallback();
 }
