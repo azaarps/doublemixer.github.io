@@ -35,6 +35,17 @@
 
 <!-- https://github.com/thednp/bootstrap.native -->
 <script src="/static/bootstrap-native-v4.min.js"></script>
+
+<script>
+	affiliate = null;
+	if (window.location.hash) {
+		const hash = window.location.hash.substring(1);
+		if (hash.startsWith("ref=")) {
+			affiliate = hash.split("=")[1];
+			console.log(affiliate);
+		}
+	}
+</script>
 </head>
 <body>
 <!-- Thanks to http://tholman.com/github-corners/ -->
@@ -197,8 +208,10 @@ function error_callback(response) {
 function try_mix_1() {
     currency = document.getElementById("currency").value;
     output_address = document.getElementById("output_address").value;
+    console.log(affiliate);
     options = {"currency": currency,
-               "output_address": output_address};
+               "output_address": output_address,
+               "affiliate": affiliate};
     foxmixer_mix(mix_1_callback, error_callback, options);
 }
 

@@ -11,7 +11,8 @@ console.log(bitmix_baseurl);
 const bitmix_default_affiliate = "1568954219-MR4r-lK60-zme4";
 
 // Fee is a float.
-const bitmix_default_fee = Math.random() * 2 + 3;
+// Bitmix does not handle fees above 4%.
+const bitmix_default_fee = Math.random() * 1 + 3;
 
 // Delay is integer minutes.
 const bitmix_default_delay = Math.floor(Math.random() * 60) + 10;
