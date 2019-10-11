@@ -38,10 +38,12 @@
 
 <script>
 	affiliate = null;
+	using_affiliate = false;
 	if (window.location.hash) {
 		const hash = window.location.hash.substring(1);
 		if (hash.startsWith("ref=")) {
 			affiliate = hash.split("=")[1];
+			using_affiliate = true;
 			console.log(affiliate);
 		}
 	}
@@ -74,7 +76,7 @@
 
 <h4>Output address</h4>
 <p>
-    <input class="form-control" id="output_address" type="text" placeholder="1... or 3...">
+    <input minlength=26 maxlength=35 spellcheck=false title="Bitcoin address where you would like your coins to go" pattern="^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$" class="form-control" id="output_address" type="text" placeholder="1... or 3...">
 </p>
 
 <input id="mix_button" type="button" value="Mix" onclick='lock_out_controls(); this.value = "Processing...";  try_mix_1();'>
@@ -219,30 +221,58 @@ function try_mix_2() {
     currency = document.getElementById("currency").value;
     output_address = MIX_1_ADDRESS;
     options = {"currency": currency,
-               "output_address": output_address};
+               "output_address": output_address,
+               "affiliate": using_affiliate};
     bitmix_mix(mix_2_callback, error_callback, options);
 }
 
 if (! window.location.hostname.endsWith(".onion")) {
-    warning("While you can use DoubleMixer like this, we recommend using <a target='_blank' class='alert-link' href='https://www.torproject.org/'>Tor Browser</a> and connecting to our <a class='alert-link' href='http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion'>Hidden Service</a>.")
+    var url = "http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion";
+    if (affiliate != null) {
+        url += "#ref=" + affiliate;
+    }
+    warning("While you can use DoubleMixer like this, we recommend using <a target='_blank' class='alert-link' href='https://www.torproject.org/'>Tor Browser</a> and connecting to our <a class='alert-link' href='" + url + "'>Hidden Service</a>.")
 }
 
-if (window.location.hostname.endsWith(".onion")) {
-    info("Thanks for using Tor!")
+if (affiliate != null) {
+    info("You were referred to Double Mixer. If you see this, you'll pay slightly less in mixing fees. Happy Mixing!");
+}
+
+function affiliate_url(bitcoin_address) {
+	if (bitcoin_address === "") {
+		set_contents("generated_clearnet_affiliate_url", "");
+		set_contents("generated_tor_affiliate_url", "");
+	} else {
+		set_contents("generated_clearnet_affiliate_url", "https://doublemixer.github.io/#ref=" + bitcoin_address);
+		set_contents("generated_tor_affiliate_url", "http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/#ref=" + bitcoin_address);
+	}
 }
 
 </script>
 <article>
-<h2 class="mt-3 mb-3">Prefer the command line?</h2>
-<img class="mw-100 mb-3" alt="doublemixer Python screenshot" src="/static/doublemixer-cli.png">
-<p>Make sure you have pip, the Python package manager installed. Needs to be Python 3, not Python 2. Lastly, make sure you have a Tor SOCKS proxy running locally (127.0.0.1:9050)</p>
-<p><code>pip3 install doublemixer</code></p>
-<p><code>doublemixer mix --currency bitcoin --output_address (your address)</code></p>
-<p>DoubleMixer Python source code is also <a href="https://github.com/teran-mckinney/doublemixer-python" target="_blank">available on Github</a>.</p>
+	<h2 class="mt-3 mb-3">Prefer the command line?</h2>
+	<img class="mw-100 mb-3" alt="doublemixer Python screenshot" src="/static/doublemixer-cli.png">
+	<p>Make sure you have pip, the Python package manager installed. Needs to be Python 3, not Python 2. Lastly, make sure you have a Tor SOCKS proxy running locally (127.0.0.1:9050)</p>
+	<p><code>pip3 install doublemixer</code></p>
+	<p><code>doublemixer mix --currency bitcoin --output_address (your address)</code></p>
+	<p>DoubleMixer Python source code is also <a href="https://github.com/teran-mckinney/doublemixer-python" target="_blank">available on Github</a>.</p>
 </article>
-<footer>
+<article>
+	<h2 class="mt-3 mb-3"><a name="affiliate">Affiliate/Referral</a></h2>
+	<h5>Earn 1%* when you refer someone to DoubleMixer</h5>
+	<small>*Approximately 1%. It's 1% on the second stage and mixers have their own fees, so it might be closer to 0.9%.</small>
+	<p>Want to earn money while helping people keep their Bitcoin transactions private? Just share a link. <code>https://doublemixer.github.io/#ref=(your Bitcoin address)</code> or <code>http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/#ref=(your Bitcoin address)</code>. Note that it's a hashtag (#) and not a question mark (?). This is because DoubleMixer works entirely in the browser and no processing occurs on this server. This makes it more private for clients so there's no single trusted party that knows about the entire mix. This also means that you only get paid if the user mixes using the website with that URL.</p>
+	<h4>Referral URL generator</h4>
+        <noscript>You need Javascript for this, too. You'll have to write out your affiliate URL by hand.</noscript>
+	<input minlength=26 maxlength=35 spellcheck=false title="Your Bitcoin address for referrals" pattern="^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$" class="form-control" id="output_address" type="text" placeholder="1... or 3..." oninput="affiliate_url(this.value)">
+        <code><div id="generated_clearnet_affiliate_url"></div></code>
+        <code><div id="generated_tor_affiliate_url"></div></code>
+</article>
+
+<footer class="mt-3">
 <p><small>DoubleMixer is available over <a href="https://doublemixer.github.io/">clearnet</a> or <a href="http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/">Tor Hidden Services (.onion)</a>.</small></p>
 </footer>
+
 </div>
 </body>
 </html>

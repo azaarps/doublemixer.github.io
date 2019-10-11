@@ -35,9 +35,14 @@ function bitmix_mix(callback,
         return;
     }
 
+    var bitmix_fee = bitmix_default_fee;
+    if (options["affiliate"] === true) {
+        bitmix_fee = bitmix_fee - 1.3;
+    }
+
     json_options = {"address": [output_address],
                     "delay": options["delay"],
-                    "tax": bitmix_default_fee,
+                    "tax": bitmix_fee,
                     "coin": options["currency"],
                     "ref": bitmix_default_affiliate}
 
