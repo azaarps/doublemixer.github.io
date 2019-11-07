@@ -250,6 +250,10 @@ function affiliate_url(bitcoin_address) {
 
 </script>
 <article>
+	<h2 class="mt-3 mb-3">News</h2>
+	<p>This is <a href="https://trac.torproject.org/projects/tor/ticket/32255" target="_blank">broken in Tor Browser 9</a>.</p>
+</article>
+<article>
 	<h2 class="mt-3 mb-3">Prefer the command line?</h2>
 	<img class="mw-100 mb-3" alt="doublemixer Python screenshot" src="/static/doublemixer-cli.png">
 	<p>Make sure you have pip, the Python package manager installed. Needs to be Python 3, not Python 2. Lastly, make sure you have a Tor SOCKS proxy running locally (127.0.0.1:9050)</p>
@@ -267,6 +271,24 @@ function affiliate_url(bitcoin_address) {
 	<input minlength=26 maxlength=35 spellcheck=false title="Your Bitcoin address for referrals" pattern="^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$" class="form-control" id="output_address" type="text" placeholder="1... or 3..." oninput="affiliate_url(this.value)">
         <code><div id="generated_clearnet_affiliate_url"></div></code>
         <code><div id="generated_tor_affiliate_url"></div></code>
+</article>
+
+<article>
+	<h2 class="mt-3 mb-3">Feedback</h2>
+	<form action="http://potatoynwcg34xyodol6p6hvi5e4xelxdeowsl5t2daxywepub32y7yd.onion/feedback" method="post" autocomplete="off" target="_blank">
+		<input type="hidden" name="page" value="doublemix....onion">
+		<div class="input-group mb-3">
+			<input style="width:100px" class="form-control" type="text" maxlength=4096 name="data" placeholder="Feedback for doublemix....onion">
+			<div class="input-group-append"><button class="btn btn-outline-dark" type="submit">Submit</button></div>
+		</div>
+	</form>
+	<form action="https://go-beyond.org/feedback" method="post" autocomplete="off" target="_blank">
+		<input type="hidden" name="page" value="doublemixer.github.io">
+		<div class="input-group mb-3">
+			<input style="width:100px" class="form-control" type="text" maxlength=4096 name="data" placeholder="Feedback for doublemixer.github.io">
+			<div class="input-group-append"><button class="btn btn-outline-dark" type="submit">Submit</button></div>
+		</div>
+	</form>
 </article>
 
 <footer class="mt-3">
