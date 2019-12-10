@@ -61,6 +61,7 @@
 <p>Mix your Bitcoin securely, not trusting a single party. 100% client side Javascript. Open Source.</p>
 </div>
 
+
 <script src="/static/bitmix.js"></script>
 <script src="/static/foxmixer.js"></script>
 
@@ -276,23 +277,23 @@ function affiliate_url(bitcoin_address) {
         <code><div id="generated_tor_affiliate_url"></div></code>
 </article>
 
-<article>
+<article id="feedback" style="display:none">
 	<h2 class="mt-3 mb-3">Feedback</h2>
-	<form action="http://potatoynwcg34xyodol6p6hvi5e4xelxdeowsl5t2daxywepub32y7yd.onion/feedback" method="post" autocomplete="off" target="_blank">
+	<form action="/feedback" method="post" autocomplete="off" target="_blank">
 		<input type="hidden" name="page" value="doublemix....onion">
 		<div class="input-group mb-3">
-			<input style="width:100px" class="form-control" type="text" maxlength=4096 name="data" placeholder="Feedback for doublemix....onion">
-			<div class="input-group-append"><button class="btn btn-outline-dark" type="submit">Submit</button></div>
-		</div>
-	</form>
-	<form action="https://go-beyond.org/feedback" method="post" autocomplete="off" target="_blank">
-		<input type="hidden" name="page" value="doublemixer.github.io">
-		<div class="input-group mb-3">
-			<input style="width:100px" class="form-control" type="text" maxlength=4096 name="data" placeholder="Feedback for doublemixer.github.io">
+			<input style="width:100px" class="form-control" type="text" maxlength=4096 name="data" placeholder="What do you think about DoubleMixer?">
 			<div class="input-group-append"><button class="btn btn-outline-dark" type="submit">Submit</button></div>
 		</div>
 	</form>
 </article>
+
+<script>
+// Only show feedback for .onion
+if (window.location.hostname.endsWith(".onion")) {
+    document.getElementById("feedback").style = "";
+}
+</script>
 
 <footer class="mt-5">
 <p><small>DoubleMixer is available over <a href="https://doublemixer.github.io/">clearnet</a> or <a href="http://doublemixwcfx4wadeuvuygpxej5jpu7uleesh3yptopnbj5kshnlrid.onion/">Tor Hidden Services (.onion)</a>.</small></p>
